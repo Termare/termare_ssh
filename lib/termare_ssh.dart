@@ -2,13 +2,23 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:ui';
 import 'package:dartssh/client.dart';
+import 'package:dartssh/transport.dart';
 import 'package:flutter/material.dart';
 import 'package:termare_view/termare_view.dart';
-import 'config.dart';
 
 class TermareSsh extends StatefulWidget {
-  const TermareSsh({Key key, this.controller}) : super(key: key);
+  const TermareSsh({
+    Key key,
+    this.controller,
+    @required this.hostName,
+    @required this.password,
+    this.loginName = 'root',
+  }) : super(key: key);
   final TermareController controller;
+  final String hostName;
+  final String password;
+  // 登录主机的用户名
+  final String loginName;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -41,16 +51,16 @@ class _MyHomePageState extends State<TermareSsh> {
   }
 
   void connect() {
-    controller.write('connecting $serverHost...');
+    controller.write('connecting ${widget.hostName}...\n');
     client = SSHClient(
-      hostport: Uri.parse(serverHost),
-      login: serverUser,
+      hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
+      login: widget.loginName,
       print: print,
       termWidth: 80,
       termHeight: 25,
       termvar: 'xterm-256color',
-      getPassword: () => Uint8List.fromList(utf8.encode(serverPass)),
-      response: (transport, data) {
+      getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
+      response: (SSHTransport transport, String data) {
         controller.write(data);
       },
       success: () {

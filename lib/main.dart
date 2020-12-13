@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'termare_ssh.dart';
 
 void main() {
   runApp(MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    systemNavigationBarColor: Colors.transparent,
+    systemNavigationBarDividerColor: Colors.transparent,
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -11,20 +18,80 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Termare SSH',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const TermareSsh(),
+      home: SshLoginPage(),
+    );
+  }
+}
+
+class SshLoginPage extends StatefulWidget {
+  @override
+  _SshLoginPageState createState() => _SshLoginPageState();
+}
+
+class _SshLoginPageState extends State<SshLoginPage> {
+  TextEditingController host = TextEditingController();
+  TextEditingController passwd = TextEditingController();
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        brightness: Brightness.light,
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
+      body: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            TextField(
+              controller: host,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                filled: true,
+                fillColor: Color(0xfff7f7f7),
+                hintText: '输入主机Host',
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 16.0,
+            ),
+            TextField(
+              controller: passwd,
+              obscureText: true,
+              decoration: InputDecoration(
+                border: InputBorder.none,
+                filled: true,
+                fillColor: Color(0xfff7f7f7),
+                hintText: '输入主机密码',
+                contentPadding: EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                ),
+              ),
+            ),
+            FlatButton(
+              onPressed: () {
+                Navigator.of(context)
+                    .push<void>(MaterialPageRoute(builder: (context) {
+                  return TermareSsh(
+                    hostName: host.text,
+                    password: passwd.text,
+                  );
+                }));
+              },
+              child: Text('登录'),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
