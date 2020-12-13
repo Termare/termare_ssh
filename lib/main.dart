@@ -36,6 +36,19 @@ class _SshLoginPageState extends State<SshLoginPage> {
   TextEditingController host = TextEditingController();
   TextEditingController passwd = TextEditingController();
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration(milliseconds: 100), () {
+      Navigator.of(context).push<void>(MaterialPageRoute(builder: (context) {
+        return TermareSsh(
+          hostName: 'nightmare.fun',
+          password: 'mys906262255*',
+        );
+      }));
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
