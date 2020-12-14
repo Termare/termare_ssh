@@ -40,7 +40,10 @@ class _SshLoginPageState extends State<SshLoginPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 100), () {
       Navigator.of(context).push<void>(MaterialPageRoute(builder: (context) {
-        return TermareSsh();
+        return TermareSsh(
+          hostName: '192.168.43.1',
+          password: 'mys906262255',
+        );
       }));
     });
   }
