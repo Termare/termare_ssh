@@ -40,10 +40,7 @@ class _SshLoginPageState extends State<SshLoginPage> {
     super.initState();
     Future.delayed(Duration(milliseconds: 100), () {
       Navigator.of(context).push<void>(MaterialPageRoute(builder: (context) {
-        return TermareSsh(
-          hostName: 'nightmare.fun',
-          password: 'mys906262255*',
-        );
+        return TermareSsh();
       }));
     });
   }
