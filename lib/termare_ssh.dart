@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:dartssh/client.dart';
 import 'package:dartssh/transport.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:termare_view/termare_view.dart';
 
 class TermareSsh extends StatefulWidget {
@@ -46,7 +47,7 @@ class _MyHomePageState extends State<TermareSsh> {
           rowLength: row - 2,
           columnLength: column - 2,
         );
-
+    controller.setFontSize(11);
     connect();
   }
 
@@ -78,11 +79,14 @@ class _MyHomePageState extends State<TermareSsh> {
 
   @override
   Widget build(BuildContext context) {
-    return TermareView(
-      controller: controller,
-      keyboardInput: (String data) {
-        client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
-      },
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle.light,
+      child: TermareView(
+        controller: controller,
+        keyboardInput: (String data) {
+          client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
+        },
+      ),
     );
   }
 }
