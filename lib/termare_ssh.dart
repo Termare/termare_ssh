@@ -14,12 +14,16 @@ class TermareSsh extends StatefulWidget {
     @required this.hostName,
     @required this.password,
     this.loginName = 'root',
+    this.sshClient,
+    this.successClient,
   }) : super(key: key);
   final TermareController controller;
   final String hostName;
   final String password;
   // 登录主机的用户名
   final String loginName;
+  final SSHClient sshClient;
+  final void Function(SSHClient sshClient) successClient;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -42,35 +46,45 @@ class _MyHomePageState extends State<TermareSsh> {
     // 列数
     final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
     print('< row : $row column : $column>');
-    controller = widget.controller ??
-        TermareController(
-          rowLength: row - 2,
-          columnLength: column - 2,
-        );
-    controller.setFontSize(11);
+    if (widget.controller == null) {
+      controller = TermareController(
+        rowLength: row - 2,
+        columnLength: column - 2,
+      );
+      controller.setFontSize(11);
+    } else {
+      controller = widget.controller;
+    }
+
     connect();
   }
 
   void connect() {
-    controller.write('connecting ${widget.hostName}...\n');
-    client = SSHClient(
-      hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
-      login: widget.loginName,
-      print: print,
-      termWidth: 80,
-      termHeight: 25,
-      termvar: 'xterm-256color',
-      getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
-      response: (SSHTransport transport, String data) {
-        controller.write(data);
-      },
-      success: () {
-        controller.write('connected.\n');
-      },
-      disconnected: () {
-        controller.write('disconnected.');
-      },
-    );
+    if (widget.sshClient == null)
+      controller.write('connecting ${widget.hostName}...\n');
+    client = widget.sshClient ??
+        SSHClient(
+          hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
+          login: widget.loginName,
+          print: (String value) {
+            controller.write(value);
+          },
+          termWidth: 80,
+          termHeight: 25,
+          termvar: 'xterm-256color',
+          getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
+          response: (SSHTransport transport, String data) {
+            controller.write(data);
+          },
+          success: () {
+            controller.write('connected.\n');
+            widget.successClient(client);
+          },
+          disconnected: () {
+            widget.successClient(null);
+            controller.write('disconnected.');
+          },
+        );
   }
 
   void onInput(String input) {
