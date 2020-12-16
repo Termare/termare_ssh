@@ -16,6 +16,7 @@ class TermareSsh extends StatefulWidget {
     this.loginName = 'root',
     this.sshClient,
     this.successClient,
+    this.bottomBar,
   }) : super(key: key);
   final TermareController controller;
   final String hostName;
@@ -24,6 +25,7 @@ class TermareSsh extends StatefulWidget {
   final String loginName;
   final SSHClient sshClient;
   final void Function(SSHClient sshClient) successClient;
+  final Widget bottomBar;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -79,6 +81,11 @@ class _MyHomePageState extends State<TermareSsh> {
           success: () {
             controller.write('connected.\n');
             widget.successClient(client);
+            // 有点不优雅，实现controller写进终端，跟write不一样
+            controller.keyboardInput = (String data) {
+              client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
+            };
+            setState(() {});
           },
           disconnected: () {
             widget.successClient(null);
@@ -96,10 +103,9 @@ class _MyHomePageState extends State<TermareSsh> {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.light,
       child: TermareView(
+        bottomBar: widget.bottomBar,
         controller: controller,
-        keyboardInput: (String data) {
-          client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
-        },
+        keyboardInput: controller.keyboardInput,
       ),
     );
   }
