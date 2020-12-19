@@ -17,6 +17,7 @@ class TermareSsh extends StatefulWidget {
     this.sshClient,
     this.successClient,
     this.bottomBar,
+    this.onBell,
   }) : super(key: key);
   final TermareController controller;
   final String hostName;
@@ -26,6 +27,7 @@ class TermareSsh extends StatefulWidget {
   final SSHClient sshClient;
   final void Function(SSHClient sshClient) successClient;
   final Widget bottomBar;
+  final void Function() onBell;
 
   @override
   _MyHomePageState createState() => _MyHomePageState();
@@ -100,13 +102,11 @@ class _MyHomePageState extends State<TermareSsh> {
 
   @override
   Widget build(BuildContext context) {
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: TermareView(
-        bottomBar: widget.bottomBar,
-        controller: controller,
-        keyboardInput: controller.keyboardInput,
-      ),
+    return TermareView(
+      onBell: widget.onBell,
+      bottomBar: widget.bottomBar,
+      controller: controller,
+      keyboardInput: controller.keyboardInput,
     );
   }
 }
