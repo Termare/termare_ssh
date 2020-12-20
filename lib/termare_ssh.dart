@@ -36,6 +36,7 @@ class TermareSsh extends StatefulWidget {
 class _MyHomePageState extends State<TermareSsh> {
   TermareController controller;
   SSHClient client;
+  bool connected = false;
 
   @override
   void initState() {
@@ -71,19 +72,31 @@ class _MyHomePageState extends State<TermareSsh> {
           hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
           login: widget.loginName,
           print: (String value) {
-            controller.write(value);
+            print('print value ->$value');
+            controller.write(value + '\n');
+          },
+          acceptHostFingerprint: (int a, Uint8List uint8list) {
+            print(a);
+            print(uint8list);
+            return true;
           },
           termWidth: 80,
           termHeight: 25,
           termvar: 'xterm-256color',
           getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
           response: (SSHTransport transport, String data) {
-            controller.write(data);
+            // transport.
+            print('data -> $data ');
+            if (connected) {
+              controller.write(data);
+            }
           },
           success: () {
-            controller.write('connected.\n');
+            connected = true;
+            controller.write('connected success.\n');
             widget.successClient(client);
             // 有点不优雅，实现controller写进终端，跟write不一样
+            controller.clear();
             controller.keyboardInput = (String data) {
               client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
             };
