@@ -41,17 +41,18 @@ class _MyHomePageState extends State<TermareSsh> {
   @override
   void initState() {
     super.initState();
-    final Size size = window.physicalSize;
-    print(size);
-    print(window.devicePixelRatio);
-    final double screenWidth = size.width / window.devicePixelRatio;
-    final double screenHeight = size.height / window.devicePixelRatio;
-    // 行数
-    final int row = screenHeight ~/ TermareStyles.termux.letterHeight;
-    // 列数
-    final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
-    print('< row : $row column : $column>');
+
     if (widget.controller == null) {
+      final Size size = window.physicalSize;
+      print(size);
+      print(window.devicePixelRatio);
+      final double screenWidth = size.width / window.devicePixelRatio;
+      final double screenHeight = size.height / window.devicePixelRatio;
+      // 行数
+      final int row = screenHeight ~/ TermareStyles.termux.letterHeight;
+      // 列数
+      final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
+      print('< row : $row column : $column>');
       controller = TermareController(
         rowLength: row - 2,
         columnLength: column - 2,
@@ -67,6 +68,14 @@ class _MyHomePageState extends State<TermareSsh> {
   void connect() {
     if (widget.sshClient == null)
       controller.write('connecting ${widget.hostName}...\n');
+    final Size size = window.physicalSize;
+    final double screenWidth = size.width / window.devicePixelRatio;
+    final double screenHeight = size.height / window.devicePixelRatio;
+    // 行数
+    final int row = screenHeight ~/ TermareStyles.termux.letterHeight;
+    // 列数
+    final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
+    print('ssh client 初始化的 row为$row column为$column');
     client = widget.sshClient ??
         SSHClient(
           hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
@@ -80,13 +89,13 @@ class _MyHomePageState extends State<TermareSsh> {
             print(uint8list);
             return true;
           },
-          termWidth: 80,
-          termHeight: 25,
+          termWidth: 49,
+          termHeight: 49,
           termvar: 'xterm-256color',
           getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
           response: (SSHTransport transport, String data) {
             // transport.
-            print('data -> $data ');
+            // print('data -> $data ');
             if (connected) {
               controller.write(data);
             }
