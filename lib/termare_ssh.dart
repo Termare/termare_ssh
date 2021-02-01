@@ -76,6 +76,7 @@ class _MyHomePageState extends State<TermareSsh> {
     // 列数
     final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
     print('ssh client 初始化的 row为$row column为$column');
+    // 抓异常
     client = widget.sshClient ??
         SSHClient(
           hostport: Uri.parse('ssh://' + widget.hostName + ':22'),
