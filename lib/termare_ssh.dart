@@ -90,8 +90,8 @@ class _MyHomePageState extends State<TermareSsh> {
             print(uint8list);
             return true;
           },
-          termWidth: 49,
-          termHeight: 49,
+          termWidth: column,
+          termHeight: row,
           termvar: 'xterm-256color',
           getPassword: () => Uint8List.fromList(utf8.encode(widget.password)),
           response: (SSHTransport transport, String data) {
