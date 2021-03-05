@@ -16,7 +16,6 @@ class TermareSsh extends StatefulWidget {
     this.loginName = 'root',
     this.sshClient,
     this.successClient,
-    this.bottomBar,
     this.onBell,
   }) : super(key: key);
   final TermareController controller;
@@ -26,7 +25,6 @@ class TermareSsh extends StatefulWidget {
   final String loginName;
   final SSHClient sshClient;
   final void Function(SSHClient sshClient) successClient;
-  final Widget bottomBar;
   final void Function() onBell;
 
   @override
@@ -43,20 +41,7 @@ class _MyHomePageState extends State<TermareSsh> {
     super.initState();
 
     if (widget.controller == null) {
-      final Size size = window.physicalSize;
-      print(size);
-      print(window.devicePixelRatio);
-      final double screenWidth = size.width / window.devicePixelRatio;
-      final double screenHeight = size.height / window.devicePixelRatio;
-      // 行数
-      final int row = screenHeight ~/ TermareStyles.termux.letterHeight;
-      // 列数
-      final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
-      print('< row : $row column : $column>');
-      controller = TermareController(
-        rowLength: row - 2,
-        columnLength: column - 2,
-      );
+      controller = TermareController();
       controller.setFontSize(11);
     } else {
       controller = widget.controller;
@@ -68,13 +53,11 @@ class _MyHomePageState extends State<TermareSsh> {
   void connect() {
     if (widget.sshClient == null)
       controller.write('connecting ${widget.hostName}...\n');
-    final Size size = window.physicalSize;
-    final double screenWidth = size.width / window.devicePixelRatio;
-    final double screenHeight = size.height / window.devicePixelRatio;
+    final TermSize size = TermSize.getTermSize(window.physicalSize);
     // 行数
-    final int row = screenHeight ~/ TermareStyles.termux.letterHeight;
+    final int row = size.row;
     // 列数
-    final int column = screenWidth ~/ TermareStyles.termux.letterWidth;
+    final int column = size.column;
     print('ssh client 初始化的 row为$row column为$column');
     // 抓异常
     client = widget.sshClient ??
@@ -127,7 +110,6 @@ class _MyHomePageState extends State<TermareSsh> {
   Widget build(BuildContext context) {
     return TermareView(
       onBell: widget.onBell,
-      bottomBar: widget.bottomBar,
       controller: controller,
       keyboardInput: controller.keyboardInput,
     );
