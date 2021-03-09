@@ -81,6 +81,7 @@ class _MyHomePageState extends State<TermareSsh> {
             // transport.
             // print('data -> $data ');
             if (connected) {
+              controller.autoScroll = true;
               controller.write(data);
             }
           },
@@ -90,7 +91,7 @@ class _MyHomePageState extends State<TermareSsh> {
             widget.successClient(client);
             // 有点不优雅，实现controller写进终端，跟write不一样
             controller.clear();
-            controller.keyboardInput = (String data) {
+            controller.input = (String data) {
               client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
             };
             setState(() {});
@@ -111,7 +112,7 @@ class _MyHomePageState extends State<TermareSsh> {
     return TermareView(
       onBell: widget.onBell,
       controller: controller,
-      keyboardInput: controller.keyboardInput,
+      keyboardInput: controller.input,
     );
   }
 }
