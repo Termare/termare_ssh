@@ -94,6 +94,9 @@ class _MyHomePageState extends State<TermareSsh> {
             controller.input = (String data) {
               client?.sendChannelData(Uint8List.fromList(utf8.encode(data)));
             };
+            controller.sizeChanged = (TermSize size) {
+              client?.setTerminalWindowSize(size.column, size.row);
+            };
             setState(() {});
           },
           disconnected: () {
