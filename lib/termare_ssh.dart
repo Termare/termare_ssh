@@ -113,7 +113,6 @@ class _MyHomePageState extends State<TermareSsh> {
   @override
   Widget build(BuildContext context) {
     return TermareView(
-      onBell: widget.onBell,
       controller: controller,
       keyboardInput: controller.input,
     );
