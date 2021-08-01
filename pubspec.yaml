@@ -25,7 +25,7 @@ dependencies:
   flutter:
     sdk: flutter
   termare_view:
-    path: ../termare_view
+    git: https://github.com/termare/termare_view
 
 dev_dependencies:
   flutter_test:
