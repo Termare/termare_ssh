@@ -53,7 +53,7 @@ class _MyHomePageState extends State<TermareSsh> {
   void connect() {
     if (widget.sshClient == null)
       controller.write('connecting ${widget.hostName}...\n');
-    final TermSize size = TermSize.getTermSize(window.physicalSize);
+    final TermSize size = TermSize.formSize(window.physicalSize);
     // 行数
     final int row = size.row;
     // 列数
@@ -81,7 +81,7 @@ class _MyHomePageState extends State<TermareSsh> {
             // transport.
             // print('data -> $data ');
             if (connected) {
-              controller.autoScroll = true;
+              controller.enableAutoScroll();
               controller.write(data);
             }
           },
